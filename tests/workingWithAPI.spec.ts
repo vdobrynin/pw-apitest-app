@@ -9,6 +9,10 @@ test.beforeEach(async ({ page }) => {
     })
 
     await page.goto('https://conduit.bondaracademy.com/');
+    await page.getByText(' Sign in ').click()
+    await page.getByRole('textbox', { name: 'Email' }).fill('pwtest60@test.com')
+    await page.getByRole('textbox', { name: 'Password' }).fill('vd12345')
+    await page.getByRole('button').click()
 })
 
 test('has title', async ({ page }) => {
@@ -25,11 +29,9 @@ test('has title', async ({ page }) => {
 
     await page.getByText('Global Feed').click()
     await expect(page.locator('.navbar-brand')).toHaveText('conduit')
-    await expect(page.locator('app-article-list h1').first())
-        .toContainText('This is a MOCK test title')
-    await expect(page.locator('app-article-list p').first())
-        .toContainText('This is a MOCK description')
-    // await page.waitForTimeout(1000) // if assertion not present need wait time
+    await expect(page.locator('app-article-list h1').first()).toContainText('This is a MOCK test title')
+    await expect(page.locator('app-article-list p').first()).toContainText('This is a MOCK description')
+    // await page.waitForTimeout(1000) // if assertion not present we need to wait some time
 })
 
 test('delete the article', async ({ page, request }) => {
@@ -43,7 +45,7 @@ test('delete the article', async ({ page, request }) => {
     const responseBody = await response.json()
     const accessToken = responseBody.user.token
 
-    await request.post('https://conduit-api.bondaracademy.com/api/articles/', {
+    const articleResponse = await request.post('https://conduit-api.bondaracademy.com/api/articles/', {
         data: {
             "article": { "title": "This is a test article", "description": "This is a test description", "body": "This is a test body", "tagList": [] }
         },
@@ -51,4 +53,12 @@ test('delete the article', async ({ page, request }) => {
             Authorization: `Token ${accessToken}`
         }
     })
+    expect(articleResponse.status()).toEqual(201)
+
+    await page.getByText('Global Feed').click()
+    await page.getByText('This is a test article').click()
+    await page.getByRole('button', { name: 'Delete Article' }).first().click()
+    await page.getByText('Global Feed').click()
+
+    await expect(page.locator('app-article-list h1').first()).not.toContainText('This is a test article')
 })
