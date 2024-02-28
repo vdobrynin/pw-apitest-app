@@ -1,4 +1,4 @@
-import { test, expect, request } from '@playwright/test'
+import { test, expect, request } from '@playwright/test';
 import tags from '../test-data/tags.json'
 
 test.beforeEach(async ({ page }) => {
@@ -9,10 +9,6 @@ test.beforeEach(async ({ page }) => {
     })
 
     await page.goto('https://conduit.bondaracademy.com/');
-    await page.getByText(' Sign in ').click()
-    await page.getByRole('textbox', { name: 'Email' }).fill('pwtest60@test.com')
-    await page.getByRole('textbox', { name: 'Password' }).fill('vd12345')
-    await page.getByRole('button').click()
 })
 
 test('has title', async ({ page }) => {
