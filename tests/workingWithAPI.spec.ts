@@ -28,9 +28,12 @@ test('has title', async ({ page }) => {
     })
 
     await page.getByText('Global Feed').click()
-    await expect(page.locator('.navbar-brand')).toHaveText('conduit')
-    await expect(page.locator('app-article-list h1').first()).toContainText('This is a MOCK test title')
-    await expect(page.locator('app-article-list p').first()).toContainText('This is a MOCK description')
+    await expect(page.locator('.navbar-brand'))
+        .toHaveText('conduit')
+    await expect(page.locator('app-article-list h1').first())
+        .toContainText('This is a MOCK test title')
+    await expect(page.locator('app-article-list p').first())
+        .toContainText('This is a MOCK description')
     // await page.waitForTimeout(1000) // if assertion not present we need to wait some time
 })
 
@@ -61,4 +64,42 @@ test('delete the article', async ({ page, request }) => {
     await page.getByText('Global Feed').click()
 
     await expect(page.locator('app-article-list h1').first()).not.toContainText('This is a test article')
+})
+
+test('create article', async ({ page, request }) => {
+    await page.getByText('New Article')
+        .click()
+    await page.getByRole('textbox', { name: 'Article Title' })
+        .fill('Playwright is awesome')
+    await page.getByRole('textbox', { name: "What's this article about?" })
+        .fill('About the Playwright')
+    await page.getByRole('textbox', { name: 'Write your article (in markdown)' })
+        .fill('We like to use playwright for automation')
+    await page.getByRole('button', { name: 'Publish Article' }).click()
+    const articleResponse = await page.waitForResponse('https://conduit-api.bondaracademy.com/api/articles/')
+    const articleResponseBody = await articleResponse.json()
+    const slugId = articleResponseBody.article.slug
+
+    await expect(page.locator('.article-page h1')).toContainText('Playwright is awesome')
+    await page.getByText('Home').click()
+    await page.getByText('Global Feed').click()
+
+    await expect(page.locator('app-article-list h1').first()).toContainText('Playwright is awesome')
+
+    const response = await request.post('https://conduit-api.bondaracademy.com/api/users/login', {
+        data: {
+            "user": { email: "pwtest60@test.com", password: "vd12345" }
+        }
+    })
+
+    const responseBody = await response.json()
+    const accessToken = responseBody.user.token
+
+    const deleteArticleRequest = await request.delete(`https://conduit-api.bondaracademy.com/api/articles/${slugId}`,
+        {
+            headers: {
+                Authorization: `Token ${accessToken}`
+            }
+        })
+    expect(deleteArticleRequest.status()).toEqual(204)
 })
