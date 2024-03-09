@@ -14,7 +14,7 @@ test.beforeEach(async ({ page }) => {
 
 test('has title', async ({ page }) => {
 
-    await page.waitForTimeout(30)
+    await page.waitForTimeout(50)
     await page.route('*/**/api/articles*', async route => {
         const response = await route.fetch()                 // storing response in variable
         const responseBody = await response.json()
@@ -52,15 +52,13 @@ test('delete the article', async ({ page, request }) => {
 
 test('create article', async ({ page, request }) => {
 
-    await page.getByText('New Article')
-        .click()
-    await page.getByRole('textbox', { name: 'Article Title' })
-        .fill('Playwright is awesome')
-    await page.getByRole('textbox', { name: "What's this article about?" })
-        .fill('About the Playwright')
+    await page.getByText('New Article').click()
+    await page.getByRole('textbox', { name: 'Article Title' }).fill('Playwright is awesome')
+    await page.getByRole('textbox', { name: "What's this article about?" }).fill('About the Playwright')
     await page.getByRole('textbox', { name: 'Write your article (in markdown)' })
         .fill('We like to use playwright for automation')
     await page.getByRole('button', { name: 'Publish Article' }).click()
+
     const articleResponse = await page
         .waitForResponse('https://conduit-api.bondaracademy.com/api/articles/')
     const articleResponseBody = await articleResponse.json()
