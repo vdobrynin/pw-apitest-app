@@ -8,7 +8,7 @@ setup('authentication', async ({ request }) => {
 
     const response = await request.post('https://conduit-api.bondaracademy.com/api/users/login', {
         data: {
-            "user": { email: "pwtest60@test.com", password: "vd12345" }
+            "user": { "email": "pwtest60@test.com", "password": "vd12345" }
         }
     })
 
@@ -19,5 +19,4 @@ setup('authentication', async ({ request }) => {
     fs.writeFileSync(authFile, JSON.stringify(user))
 
     process.env['ACCESS_TOKEN'] = accessToken
-
 })
