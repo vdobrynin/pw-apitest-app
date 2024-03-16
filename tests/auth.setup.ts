@@ -19,4 +19,5 @@ setup('authentication', async ({ request }) => {
     fs.writeFileSync(authFile, JSON.stringify(user))
 
     process.env['ACCESS_TOKEN'] = accessToken   // access to token
-}) 
+})
+

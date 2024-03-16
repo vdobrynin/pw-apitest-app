@@ -38,7 +38,7 @@ test('delete the article', async ({ page, request }) => {
     const articleResponse = await request.post('https://conduit-api.bondaracademy.com/api/articles/', {
         data: {
             "article": { "title": "This is a test title", "description": "This is a test description", "body": "This is a test body", "tagList": [] }
-        },
+        }
     })
     expect(articleResponse.status()).toEqual(201)
 
