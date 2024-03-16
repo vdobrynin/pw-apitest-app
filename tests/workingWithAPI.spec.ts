@@ -70,7 +70,7 @@ test('create article', async ({ page, request }) => {
 
     await expect(page.locator('app-article-list h1').first()).toContainText('Playwright is awesome')
 
-    const deleteArticleRequest = await request
+    const deleteArticleResponse = await request
         .delete(`https://conduit-api.bondaracademy.com/api/articles/${slugId}`)
-    expect(deleteArticleRequest.status()).toEqual(204)
+    expect(deleteArticleResponse.status()).toEqual(204)
 })

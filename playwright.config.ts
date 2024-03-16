@@ -40,8 +40,13 @@ export default defineConfig({
     },
     {
       name: 'articleSetup',
-      testMatch: ' newArticle.setup.ts',
-      dependencies: ['setup']
+      testMatch: 'newArticle.setup.ts',
+      dependencies: ['setup'],
+      teardown: 'articleCleanUp'
+    },
+    {
+      name: 'articleCleanUp',
+      testMatch: 'articleCleanUp.setup.ts'
     },
     {
       name: 'regression',
