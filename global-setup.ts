@@ -6,6 +6,7 @@ async function globalSetup() {
 
     const authFile = '.auth/user.json'
     const context = await request.newContext()
+
     const responseToken = await context.post('https://conduit-api.bondaracademy.com/api/users/login', {
         data: {
             "user": { "email": "pwtest60@test.com", "password": "vd12345" }
@@ -27,6 +28,7 @@ async function globalSetup() {
         }
     })
     expect(articleResponse.status()).toEqual(201)
+
     const response = await articleResponse.json()
     const slugId = response.article.slug
     process.env['SLUGID'] = slugId

@@ -63,7 +63,7 @@ export default defineConfig({
       dependencies: ['articleSetup']
     },
     {
-      name: 'likeCounterGlobal',                               // ---> for global setup & teardown without dependencies
+      name: 'likeCounterGlobal',                     // ---> for global setup & teardown without dependencies
       testMatch: 'likesCounterGlobal.spec.ts',
       use: { ...devices['Desktop Chrome'], storageState: '.auth/user.json' },
     },
