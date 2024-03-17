@@ -11,13 +11,11 @@ setup('authentication', async ({ request }) => {
             "user": { "email": "pwtest60@test.com", "password": "vd12345" }
         }
     })
-
     const responseBody = await response.json()
     const accessToken = responseBody.user.token
 
     user.origins[0].localStorage[0].value = accessToken
     fs.writeFileSync(authFile, JSON.stringify(user))
-
-    process.env['ACCESS_TOKEN'] = accessToken   // access to token
+    process.env['ACCESS_TOKEN'] = accessToken           // access to token
 })
 

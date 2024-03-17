@@ -8,7 +8,6 @@ setup('create new article', async ({ request }) => {
         }
     })
     expect(articleResponse.status()).toEqual(201)
-
     const response = await articleResponse.json()
     const slugId = response.article.slug
     process.env['SLUGID'] = slugId
