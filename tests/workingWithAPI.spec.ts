@@ -8,6 +8,17 @@ test.beforeEach(async ({ page }) => {
         })
     })
 
+    await page.route('*/**/api/articles*', async route => {  // intercept response
+        const response = await route.fetch()                 // storing response in variable
+        const responseBody = await response.json()           // storing in json
+        responseBody.articles[0].title = 'This is a test title'  //modify of 1st title
+        responseBody.articles[0].description = 'This is a description' //modify of description
+
+        await route.fulfill({
+            body: JSON.stringify(responseBody)  // fulfill body response
+        })
+    })
+
     await page.goto('https://conduit.bondaracademy.com/');
 })
 
@@ -25,10 +36,10 @@ test('has title', async ({ page }) => {
     // })
 
     // await page.getByText('Global Feed').click()
-    await expect(page.locator('.navbar-brand')).toHaveText('conduit')
-    // await expect(page.locator('app-article-list h1').first()).toContainText('This is a MOCK test title')
-    // await expect(page.locator('app-article-list p').first()).toContainText('This is a MOCK description')
-    // // await page.waitForTimeout(100) // if assertion not present we need to wait some time
+    await expect(page.locator('.navbar-brand')).toHaveText('conduit') // assertion for page
+    await expect(page.locator('app-article-list h1').first()).toContainText('This is a test title') //assertions for test
+    await expect(page.locator('app-article-list p').first()).toContainText('This is a description')
+    // // await page.waitForTimeout(1000) // if assertion not present we need to wait some time
 })
 
 test('delete the article', async ({ page, request }) => {
