@@ -1,13 +1,13 @@
 import { test, expect, request } from '@playwright/test';
 import tags from '../test-data/tags.json'
 
-test.beforeEach(async ({ page }) => {
+test.beforeEach(async ({ page }) => {  // #57 - 2nd part delete article - we comment it cause don't need browser
     await page.route('*/**/api/tags', async route => {  // #55 mocking API
         await route.fulfill({
             body: JSON.stringify(tags)
         })
     })
-    // await page.route('*/**/api/articles*', async route => { //  #57 remove & move below //intercept response in variable
+    // await page.route('*/**/api/articles*', async route => { // #57 remove & move below //intercept response in variable
     //     const response = await route.fetch()                 // storing response in variable
     //     const responseBody = await response.json()           // storing in json
     //     responseBody.articles[0].title = 'This is a test title'  //modify of 1st title
@@ -17,7 +17,11 @@ test.beforeEach(async ({ page }) => {
     //         body: JSON.stringify(responseBody)  // fulfill body response
     //     })
     // })
-    await page.goto('https://conduit.bondaracademy.com/');
+    await page.goto('https://conduit.bondaracademy.com/')
+    // await page.getByText('Sign in').click()
+    // await page.getByRole('textbox', { name: 'Email' }).fill('pwtest60@test.com')
+    // await page.getByRole('textbox', { name: 'Password' }).fill('vd12345')
+    // await page.getByRole('button').click()
 })
 
 test('has title', async ({ page }) => {
@@ -42,9 +46,21 @@ test('has title', async ({ page }) => {
 })
 
 test('delete the article', async ({ page, request }) => {
+    const response = await request.post('https://conduit-api.bondaracademy.com/api/users/login', {
+        data: {
+            "user": { "email": "pwtest60@test.com", "password": "vd12345" }
+        }
+    })
+
+    const responseBody = await response.json()
+    const accessToken = responseBody.user.token
+    // console.log(responseBody.user.token) // --> refactor to the line above
     const articleResponse = await request.post('https://conduit-api.bondaracademy.com/api/articles/', {
         data: {
             "article": { "title": "This is a test title", "description": "This is a test description", "body": "This is a test body", "tagList": [] }
+        },
+        headers: {
+            Authorization: `Token ${accessToken}`
         }
     })
     expect(articleResponse.status()).toEqual(201)
@@ -53,8 +69,8 @@ test('delete the article', async ({ page, request }) => {
     await page.getByText('This is a test title').click()
     await page.getByRole('button', { name: 'Delete Article' }).first().click()
     await page.getByText('Global Feed').click()
-
-    await expect(page.locator('app-article-list h1').first()).not.toContainText('This is a test title')
+    await expect(page.locator('app-article-list h1')
+        .first()).not.toContainText('This is a test title') // assertion
 })
 
 test('create article', async ({ page, request }) => {
