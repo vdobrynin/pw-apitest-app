@@ -7,7 +7,7 @@ test.beforeEach(async ({ page }) => {  // #57 - 2nd part delete article - we com
             body: JSON.stringify(tags)
         })
     })
-    // await page.route('*/**/api/articles*', async route => { // #57 remove & move below //intercept response in variable
+    // await page.route('*/**/api/articles*', async route => { //--> #57 remove & Move Below//intercept response in variable
     //     const response = await route.fetch()                 // storing response in variable
     //     const responseBody = await response.json()           // storing in json
     //     responseBody.articles[0].title = 'This is a test title'  //modify of 1st title
@@ -25,7 +25,7 @@ test.beforeEach(async ({ page }) => {  // #57 - 2nd part delete article - we com
 })
 
 test('has title', async ({ page }) => {
-    await page.route('*/**/api/articles*', async route => { // #57 move in from above & change with MOCK
+    await page.route('*/**/api/articles*', async route => { //--> #57 move in from above & change with MOCK
         const response = await route.fetch()                 // storing response in variable
         const responseBody = await response.json()           // storing in json
         responseBody.articles[0].title = 'This is a MOCK test title'        //modify of MOCK title
@@ -66,34 +66,58 @@ test('delete the article', async ({ page, request }) => {
     expect(articleResponse.status()).toEqual(201)
 
     await page.getByText('Global Feed').click()
+    await page.reload()
     await page.getByText('This is a test title').click()
     await page.getByRole('button', { name: 'Delete Article' }).first().click()
     await page.getByText('Global Feed').click()
+
     await expect(page.locator('app-article-list h1')
         .first()).not.toContainText('This is a test title') // assertion
 })
 
-test('create article', async ({ page, request }) => {
-
-    await page.getByText('New Article').click()
-    await page.getByRole('textbox', { name: 'Article Title' }).fill('Playwright is awesome')
-    await page.getByRole('textbox', { name: "What's this article about?" }).fill('About the Playwright')
+test('create article', async ({ page, request }) => {  // #58
+    await page.getByText('New Article')
+        .click()
+    await page.getByRole('textbox', { name: 'Article Title' })
+        .fill('Playwright is awesome')
+    await page.getByRole('textbox', { name: 'What\'s this article about?' })
+        .fill('About the Playwright')                                           // use backslash
+    // await page.getByRole('textbox', { name: "What's this article about?" })
+    // .fill('About the Playwright')                                            // or double quotes
     await page.getByRole('textbox', { name: 'Write your article (in markdown)' })
         .fill('We like to use playwright for automation')
-    await page.getByRole('button', { name: 'Publish Article' }).click()
+    await page.getByRole('button', { name: 'Publish Article' })
+        .click()
 
     const articleResponse = await page
-        .waitForResponse('https://conduit-api.bondaracademy.com/api/articles/')
-    const articleResponseBody = await articleResponse.json()
-    const slugId = articleResponseBody.article.slug
+        .waitForResponse('https://conduit-api.bondaracademy.com/api/articles/') // intercept api response (back)
+    const articleResponseBody = await articleResponse.json()                    // return  json object body
+    const slugId = articleResponseBody.article.slug                             // from json we'll have slug ID
 
-    await expect(page.locator('.article-page h1')).toContainText('Playwright is awesome')
+    await expect(page.locator('.article-page h1'))
+        .toContainText('Playwright is awesome')                 // assertion
     await page.getByText('Home').click()
     await page.getByText('Global Feed').click()
 
-    await expect(page.locator('app-article-list h1').first()).toContainText('Playwright is awesome')
+    await expect(page.locator('app-article-list h1').first())
+        .toContainText('Playwright is awesome')                 // assertion
 
-    const deleteArticleResponse = await request
-        .delete(`https://conduit-api.bondaracademy.com/api/articles/${slugId}`)
-    expect(deleteArticleResponse.status()).toEqual(204)
+    const response = await request.post('https://conduit-api.bondaracademy.com/api/users/login', { //#58 
+        data: {
+            "user": { "email": "pwtest60@test.com", "password": "vd12345" }
+        }
+    })
+
+    const responseBody = await response.json()                                                     //#58 
+    const accessToken = responseBody.user.token
+    const deleteArticleResponse = await request.delete(`https://conduit-api.bondaracademy.com/api/articles/${slugId}`, {
+        headers: {
+            Authorization: `Token ${accessToken}`
+        }
+    })
+    await page.reload()                                                                            //#58 I added  
+    expect(deleteArticleResponse.status()).toEqual(204)                                            //#58 
+    // const deleteArticleResponse = await request
+    //     .delete(`https://conduit-api.bondaracademy.com/api/articles/${slugId}`) // intercept api call
+    // expect(deleteArticleResponse.status()).toEqual(204)
 })
