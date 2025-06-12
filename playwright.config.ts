@@ -27,7 +27,8 @@ export default defineConfig({
     // baseURL: 'http://127.0.0.1:3000',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
+    trace: 'on',                  // #61 for debugging for more info
+    // trace: 'on-first-retry',   // this is if fail to retry
     extraHTTPHeaders: {                                      // #60 authorization token as process env variable    
       'Authorization': `Token ${process.env.ACCESS_TOKEN}`
     }

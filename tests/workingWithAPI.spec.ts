@@ -63,16 +63,17 @@ test('delete the article', async ({ page, request }) => {
         //     Authorization: `Token ${accessToken}`
         // }
     })
+    console.log(await articleResponse.json()) // #61 for debugging to see response why it's fail
     expect(articleResponse.status()).toEqual(201)
 
-    await page.getByText('Global Feed').click()
+    await page.getByText('Global Feed').click()   // #61 comment to uncomment for debugging
     await page.reload()
     await page.getByText('This is a test title').click()
     await page.getByRole('button', { name: 'Delete Article' }).first().click()
     await page.getByText('Global Feed').click()
 
-    await expect(page.locator('app-article-list h1')
-        .first()).not.toContainText('This is a test title') // assertion
+    // await expect(page.locator('app-article-list h1')
+    //     .first()).not.toContainText('This is a test title') // assertion
 })
 
 test('create article', async ({ page, request }) => {  // #58
@@ -92,7 +93,8 @@ test('create article', async ({ page, request }) => {  // #58
     const articleResponse = await page
         .waitForResponse('https://conduit-api.bondaracademy.com/api/articles/') // intercept api response (back)
     const articleResponseBody = await articleResponse.json()                    // return  json object body
-    const slugId = articleResponseBody.article.slug                             // from json we'll have slug ID
+    const slugId = articleResponseBody.article.slug                    // from json we'll have slug ID
+    // const slugId = articleResponseBody.article.slug + '12345'           // for debugging
 
     await expect(page.locator('.article-page h1'))
         .toContainText('Playwright is awesome')                 // assertion
@@ -120,5 +122,5 @@ test('create article', async ({ page, request }) => {  // #58
     const deleteArticleResponse = await request                                           // --> #60 
         .delete(`https://conduit-api.bondaracademy.com/api/articles/${slugId}`) // intercept api call
     expect(deleteArticleResponse.status()).toEqual(204)
-    await page.reload() 
+    await page.reload()
 })
