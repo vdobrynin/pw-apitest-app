@@ -28,9 +28,9 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
-    // extraHTTPHeaders: {
-    //   'Authorization': `Token ${process.env.ACCESS_TOKEN}`
-    // }
+    extraHTTPHeaders: {                                      // #60 authorization token as process env variable    
+      'Authorization': `Token ${process.env.ACCESS_TOKEN}`
+    }
   },
   // globalSetup: require.resolve('./global-setup.ts'),        // ---> global setup
   // globalTeardown: require.resolve('./global-teardown.ts'),   // ---> global teardown
@@ -38,48 +38,48 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [                                       // #59 
     { name: 'setup', testMatch: 'auth.setup.ts' },
-    {
-      name: 'articleSetup',
-      testMatch: 'newArticle.setup.ts',
-      dependencies: ['setup'],
-      teardown: 'articleCleanUp'
-    },
-    {
-      name: 'articleCleanUp',
-      testMatch: 'articleCleanUp.setup.ts'
-    },
-    {
-      name: 'regression',
-      testIgnore: 'likesCounter.spec.ts',                     // ---> for global setup & teardown
-      use: { ...devices['Desktop Chrome'], storageState: '.auth/user.json' },
-      dependencies: ['setup']
-    },
-    {
-      name: 'likeCounter',
-      testMatch: 'likesCounter.spec.ts',
-      use: { ...devices['Desktop Chrome'], storageState: '.auth/user.json' },
-      dependencies: ['articleSetup']
-    },
-    {
-      name: 'likeCounterGlobal',                     // ---> for global setup & teardown without dependencies
-      testMatch: 'likesCounterGlobal.spec.ts',
-      use: { ...devices['Desktop Chrome'], storageState: '.auth/user.json' },
-    },
+    // {
+    //   name: 'articleSetup',
+    //   testMatch: 'newArticle.setup.ts',
+    //   dependencies: ['setup'],
+    //   teardown: 'articleCleanUp'
+    // },
+    // {
+    //   name: 'articleCleanUp',
+    //   testMatch: 'articleCleanUp.setup.ts'
+    // },
+    // {
+    //   name: 'regression',
+    //   testIgnore: 'likesCounter.spec.ts',                     // ---> for global setup & teardown
+    //   use: { ...devices['Desktop Chrome'], storageState: '.auth/user.json' },
+    //   dependencies: ['setup']
+    // },
+    // {
+    //   name: 'likeCounter',
+    //   testMatch: 'likesCounter.spec.ts',
+    //   use: { ...devices['Desktop Chrome'], storageState: '.auth/user.json' },
+    //   dependencies: ['articleSetup']
+    // },
+    // {
+    //   name: 'likeCounterGlobal',                     // ---> for global setup & teardown without dependencies
+    //   testMatch: 'likesCounterGlobal.spec.ts',
+    //   use: { ...devices['Desktop Chrome'], storageState: '.auth/user.json' },
+    // },
     {                                                         // #59 
       name: 'chromium',
       use: { ...devices['Desktop Chrome'], storageState: '.auth/user.json' },
       dependencies: ['setup']
     },
-    {                                                        // #59  //--> remove unneeded below (?maybe later?)
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'], storageState: '.auth/user.json' },
-      dependencies: ['setup']
-    },
-    {                                                        // #59 
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'], storageState: '.auth/user.json' },
-      dependencies: ['setup']
-    },
+    // {                                                        // #59  //--> remove unneeded below (?maybe later?)
+    //   name: 'firefox',
+    //   use: { ...devices['Desktop Firefox'], storageState: '.auth/user.json' },
+    //   dependencies: ['setup']
+    // },
+    // {                                                        // #59 
+    //   name: 'webkit',
+    //   use: { ...devices['Desktop Safari'], storageState: '.auth/user.json' },
+    //   dependencies: ['setup']
+    // },
 
     /* Test against mobile viewports. */
     // {
