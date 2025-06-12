@@ -28,18 +28,16 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
-    extraHTTPHeaders: {
-      'Authorization': `Token ${process.env.ACCESS_TOKEN}`
-    }
+    // extraHTTPHeaders: {
+    //   'Authorization': `Token ${process.env.ACCESS_TOKEN}`
+    // }
   },
   // globalSetup: require.resolve('./global-setup.ts'),        // ---> global setup
   // globalTeardown: require.resolve('./global-teardown.ts'),   // ---> global teardown
 
   /* Configure projects for major browsers */
-  projects: [
-    {
-      name: 'setup', testMatch: 'auth.setup.ts'
-    },
+  projects: [                                       // #59 
+    { name: 'setup', testMatch: 'auth.setup.ts' },
     {
       name: 'articleSetup',
       testMatch: 'newArticle.setup.ts',
@@ -67,21 +65,21 @@ export default defineConfig({
       testMatch: 'likesCounterGlobal.spec.ts',
       use: { ...devices['Desktop Chrome'], storageState: '.auth/user.json' },
     },
-    // {
-    //   name: 'chromium',
-    //   use: { ...devices['Desktop Chrome'], storageState: '.auth/user.json' },
-    //   dependencies: ['setup']
-    // },
-    // {                          // ---> remove unneeded below
-    //   name: 'firefox',
-    //   use: { ...devices['Desktop Firefox'], storageState: '.auth/user.json' },
-    //   dependencies: ['setup']
-    // },
-    // {
-    //   name: 'webkit',
-    //   use: { ...devices['Desktop Safari'], storageState: '.auth/user.json' },
-    //   dependencies: ['setup']
-    // },
+    {                                                         // #59 
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'], storageState: '.auth/user.json' },
+      dependencies: ['setup']
+    },
+    {                                                        // #59  //--> remove unneeded below (?maybe later?)
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'], storageState: '.auth/user.json' },
+      dependencies: ['setup']
+    },
+    {                                                        // #59 
+      name: 'webkit',
+      use: { ...devices['Desktop Safari'], storageState: '.auth/user.json' },
+      dependencies: ['setup']
+    },
 
     /* Test against mobile viewports. */
     // {

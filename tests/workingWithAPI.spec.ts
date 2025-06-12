@@ -18,7 +18,7 @@ test.beforeEach(async ({ page }) => {  // #57 - 2nd part delete article - we com
     //     })
     // })
     await page.goto('https://conduit.bondaracademy.com/')
-    // await page.getByText('Sign in').click()
+    // await page.getByText('Sign in').click()            //--> #59 move to auth.setup.ts by removing here
     // await page.getByRole('textbox', { name: 'Email' }).fill('pwtest60@test.com')
     // await page.getByRole('textbox', { name: 'Password' }).fill('vd12345')
     // await page.getByRole('button').click()
