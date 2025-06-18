@@ -43,15 +43,15 @@ export default defineConfig({
       name: 'articleSetup',                       // #69.1
       testMatch: 'newArticle.setup.ts',
       dependencies: ['setup'],
-      // teardown: 'articleCleanUp'
+      teardown: 'articleCleanUp'                // #69.2
     },
-    // {
-    //   name: 'articleCleanUp',
-    //   testMatch: 'articleCleanUp.setup.ts'
-    // },
+    {
+      name: 'articleCleanUp',                   // #69.2
+      testMatch: 'articleCleanUp.setup.ts'
+    },
     {                                               // #69.1
       name: 'regression',
-      // testIgnore: 'likesCounter.spec.ts',             // ---> for global setup & teardown
+      // testIgnore: 'likesCounter.spec.ts',           // ---> for global setup & teardown
       use: { ...devices['Desktop Chrome'], storageState: '.auth/user.json' },
       dependencies: ['setup']
     },
@@ -62,7 +62,7 @@ export default defineConfig({
       dependencies: ['articleSetup']
     },
     // {
-    //   name: 'likeCounterGlobal',                     // ---> for global setup & teardown without dependencies
+    //   name: 'likeCounterGlobal',      // ---> for global setup & teardown without dependencies
     //   testMatch: 'likesCounterGlobal.spec.ts',
     //   use: { ...devices['Desktop Chrome'], storageState: '.auth/user.json' },
     // },
