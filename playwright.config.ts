@@ -39,44 +39,44 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [                                       // #59 
     { name: 'setup', testMatch: 'auth.setup.ts' },
-    // {
-    //   name: 'articleSetup',
-    //   testMatch: 'newArticle.setup.ts',
-    //   dependencies: ['setup'],
-    //   teardown: 'articleCleanUp'
-    // },
+    {
+      name: 'articleSetup',                       // #69.1
+      testMatch: 'newArticle.setup.ts',
+      dependencies: ['setup'],
+      // teardown: 'articleCleanUp'
+    },
     // {
     //   name: 'articleCleanUp',
     //   testMatch: 'articleCleanUp.setup.ts'
     // },
-    // {
-    //   name: 'regression',
-    //   testIgnore: 'likesCounter.spec.ts',                     // ---> for global setup & teardown
-    //   use: { ...devices['Desktop Chrome'], storageState: '.auth/user.json' },
-    //   dependencies: ['setup']
-    // },
-    // {
-    //   name: 'likeCounter',
-    //   testMatch: 'likesCounter.spec.ts',
-    //   use: { ...devices['Desktop Chrome'], storageState: '.auth/user.json' },
-    //   dependencies: ['articleSetup']
-    // },
+    {                                               // #69.1
+      name: 'regression',
+      // testIgnore: 'likesCounter.spec.ts',             // ---> for global setup & teardown
+      use: { ...devices['Desktop Chrome'], storageState: '.auth/user.json' },
+      dependencies: ['setup']
+    },
+    {                                               // #69.1
+      name: 'likeCounter',
+      testMatch: 'likesCounter.spec.ts',
+      use: { ...devices['Desktop Chrome'], storageState: '.auth/user.json' },
+      dependencies: ['articleSetup']
+    },
     // {
     //   name: 'likeCounterGlobal',                     // ---> for global setup & teardown without dependencies
     //   testMatch: 'likesCounterGlobal.spec.ts',
     //   use: { ...devices['Desktop Chrome'], storageState: '.auth/user.json' },
     // },
-    {                                                         // #59 
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'], storageState: '.auth/user.json' },
-      dependencies: ['setup']
-    },
-    // {                                                        // #59  //--> remove unneeded below (?maybe later?)
+    // {                                                         // #69
+    //   name: 'chromium',
+    //   use: { ...devices['Desktop Chrome'], storageState: '.auth/user.json' },
+    //   dependencies: ['setup']
+    // },
+    // {                                             // #59  //--> remove unneeded below (?maybe later?)
     //   name: 'firefox',
     //   use: { ...devices['Desktop Firefox'], storageState: '.auth/user.json' },
     //   dependencies: ['setup']
     // },
-    // {                                                        // #59 
+    // {                                             // #59 
     //   name: 'webkit',
     //   use: { ...devices['Desktop Safari'], storageState: '.auth/user.json' },
     //   dependencies: ['setup']
