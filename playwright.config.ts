@@ -33,8 +33,8 @@ export default defineConfig({
       'Authorization': `Token ${process.env.ACCESS_TOKEN}`
     }
   },
-  // globalSetup: require.resolve('./global-setup.ts'),        // ---> global setup
-  // globalTeardown: require.resolve('./global-teardown.ts'),   // ---> global teardown
+  globalSetup: require.resolve('./global-setup.ts'),        // #70 --> global setup
+  globalTeardown: require.resolve('./global-teardown.ts'),   // #70 --> global teardown
 
   /* Configure projects for major browsers */
   projects: [                                       // #59 
@@ -51,7 +51,7 @@ export default defineConfig({
     },
     {                                               // #69.1
       name: 'regression',
-      // testIgnore: 'likesCounter.spec.ts',           // ---> for global setup & teardown
+      testIgnore: 'likesCounter.spec.ts',           // #70 --> for global setup & teardown
       use: { ...devices['Desktop Chrome'], storageState: '.auth/user.json' },
       dependencies: ['setup']
     },
@@ -61,11 +61,11 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'], storageState: '.auth/user.json' },
       dependencies: ['articleSetup']
     },
-    // {
-    //   name: 'likeCounterGlobal',      // ---> for global setup & teardown without dependencies
-    //   testMatch: 'likesCounterGlobal.spec.ts',
-    //   use: { ...devices['Desktop Chrome'], storageState: '.auth/user.json' },
-    // },
+    {
+      name: 'likeCounterGlobal',      // #70 --> for global setup & teardown without dependencies
+      testMatch: 'likesCounterGlobal.spec.ts',
+      use: { ...devices['Desktop Chrome'], storageState: '.auth/user.json' },
+    },
     // {                                                         // #69
     //   name: 'chromium',
     //   use: { ...devices['Desktop Chrome'], storageState: '.auth/user.json' },
